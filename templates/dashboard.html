@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FireWatch — Monitoreo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Estilos: base → dashboard específico -->
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+  <!-- WebSockets -->
+  <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ═══════════════════════════════════════════════ -->
+<aside class="sidebar">
+
+  <!-- Logo con pulso de calor -->
+  <div class="logo">
+    <div class="logo-icon">🔥</div>
+    <div class="logo-text">
+      <span class="logo-name">FIREWATCH</span>
+      <span class="logo-sub">Sistema Anti-Incendios</span>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <a class="nav-link active" href="/">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <circle cx="12" cy="12" r="2"/>
+        <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+      </svg>
+      Monitoreo
+    </a>
+    <a class="nav-link" href="/historial">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      Historial
+    </a>
+    <a class="nav-link" href="/estadisticas">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6"  y1="20" x2="6"  y2="14"/>
+      </svg>
+      Estadísticas
+    </a>
+    <a class="nav-link" href="/configuracion">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M5.07 4.93A10 10 0 0 1 19.13 19.07"/>
+      </svg>
+      Configuración
+    </a>
+  </nav>
+
+  <!-- Indicador de conexión WebSocket -->
+  <div class="sidebar-status">
+    <div class="status-dot" id="connectionDot"></div>
+    <span id="connectionLabel">Conectando...</span>
+  </div>
+</aside>
+
+<!-- ══ CONTENIDO PRINCIPAL ═══════════════════════════════════ -->
+<main class="main">
+
+  <!-- Topbar con título, badge y reloj -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title">Monitoreo en Tiempo Real</h1>
+      <div class="breadcrumb">Sistema / Monitoreo</div>
+    </div>
+    <div class="topbar-right">
+      <div class="system-badge" id="systemBadge">
+        <span class="badge-dot"></span>
+        <span id="systemLabel">Inactivo</span>
+      </div>
+      <div class="timestamp" id="currentTime">--:--:--</div>
+    </div>
+  </header>
+
+  <!-- Banner de alerta (oculto por defecto, activado por JS) -->
+  <div class="alert-banner hidden" id="alertBanner">
+    <div class="alert-banner-inner">
+      <span class="alert-icon"></span>
+      <span class="alert-text">FUEGO DETECTADO — Alerta activa en el sistema</span>
+      <button class="alert-dismiss" onclick="resetAlert()">Reiniciar</button>
+    </div>
+  </div>
+
+  <!-- ══ CUADRÍCULA PRINCIPAL ══ -->
+  <div class="dashboard-grid">
+
+    <!-- Video Feed -->
+    <section class="card video-card">
+      <div class="card-header">
+        <span class="card-title">Vista de Cámara</span>
+        <div class="live-badge" id="liveBadge">
+          <span class="pulse-dot"></span>
+          En Vivo
+        </div>
+      </div>
+
+      <div class="video-wrapper">
+        <!-- Stream MJPEG de Flask; placeholder cuando está detenido -->
+        <img id="videoFeed" src="/static/images/no-signal.svg" alt="Sin señal" class="video-feed">
+
+        <!-- Overlay cuando el monitoreo está detenido -->
+        <div class="video-overlay" id="videoOverlay">
+          <div class="overlay-status">
+            <!-- Ícono SVG de cámara -->
+            <div class="overlay-icon">
+              <svg width="22" height="18" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
+            <p>Monitoreo detenido</p>
+            <small>Presiona Iniciar para comenzar</small>
+          </div>
+        </div>
+
+        <!-- Borde rojo al detectar fuego -->
+        <div class="fire-flash" id="fireFlash"></div>
+
+        <!-- HUD de confianza sobre el video -->
+        <div class="confidence-hud" id="confidenceHud">
+          <span class="conf-label">Confianza</span>
+          <span class="conf-value" id="confidenceDisplay">0%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel de Estado -->
+    <section class="card status-card">
+      <div class="card-header">
+        <span class="card-title">Estado del Sistema</span>
+      </div>
+
+      <!-- Círculo de estado: safe / fire -->
+      <div class="status-main">
+        <div class="status-circle" id="statusCircle">
+          <div class="status-circle-inner">
+            <span class="status-icon-big" id="statusIconBig">—</span>
+            <span class="status-text-big" id="statusTextBig">Sin Fuego</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Métricas de estado -->
+      <div class="status-metrics">
+        <div class="metric">
+          <span class="metric-label">Última detección</span>
+          <span class="metric-value" id="lastDetection">—</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Confianza actual</span>
+          <div class="confidence-bar-container">
+            <div class="confidence-bar" id="confBar" style="width:0%"></div>
+          </div>
+          <span class="metric-value" id="confValue">0%</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Frames analizados</span>
+          <span class="metric-value mono" id="frameCount">0</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">ESP32</span>
+          <span class="metric-value" id="esp32Status">Desconectado</span>
+        </div>
+      </div>
+
+      <!-- Botones de control -->
+      <div class="controls">
+        <button class="btn btn-primary" id="btnStart" onclick="startMonitoring()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          Iniciar Monitoreo
+        </button>
+        <button class="btn btn-danger" id="btnStop" onclick="stopMonitoring()" disabled>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="4" width="4" height="16"/>
+            <rect x="14" y="4" width="4" height="16"/>
+          </svg>
+          Detener
+        </button>
+        <button class="btn btn-secondary" onclick="testESP32()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+          Probar ESP32
+        </button>
+        <button class="btn btn-outline" onclick="resetAlert()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10"/>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+          Reiniciar Alerta
+        </button>
+      </div>
+    </section>
+
+    <!-- Tarjetas de estadísticas -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="stat-number" id="statTotal">0</span>
+        <span class="stat-label">Detecciones Hoy</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="statAlerts">0</span>
+        <span class="stat-label">Alertas Enviadas</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="statAvgConf">0%</span>
+        <span class="stat-label">Confianza Promedio</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="statUptime">00:00</span>
+        <span class="stat-label">Tiempo Activo</span>
+      </div>
+    </div>
+
+    <!-- Registro de eventos -->
+    <section class="card log-card">
+      <div class="card-header">
+        <span class="card-title">Registro de Eventos</span>
+        <button class="btn-sm" onclick="clearLog()">Limpiar</button>
+      </div>
+      <!-- Entradas añadidas dinámicamente por dashboard.js -->
+      <div class="log-container" id="logContainer">
+        <div class="log-entry log-info">
+          <span class="log-time">--:--:--</span>
+          <span class="log-msg">Sistema FireWatch inicializado</span>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /.dashboard-grid -->
+</main>
+
+<!-- Notificaciones flotantes -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Scripts: utilidades globales → lógica del dashboard -->
+<script src="/static/js/main.js"></script>
+<script src="/static/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FireWatch — Estadísticas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Estilos: base → pages compartido -->
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/pages.css">
+  <!-- Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  <!-- WebSockets -->
+  <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ═══════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">🔥</div>
+    <div class="logo-text">
+      <span class="logo-name">FIREWATCH</span>
+      <span class="logo-sub">Sistema Anti-Incendios</span>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <a class="nav-link" href="/">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <circle cx="12" cy="12" r="2"/>
+        <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+      </svg>
+      Monitoreo
+    </a>
+    <a class="nav-link" href="/historial">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      Historial
+    </a>
+    <a class="nav-link active" href="/estadisticas">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6"  y1="20" x2="6"  y2="14"/>
+      </svg>
+      Estadísticas
+    </a>
+    <a class="nav-link" href="/configuracion">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M5.07 4.93A10 10 0 0 1 19.13 19.07"/>
+      </svg>
+      Configuración
+    </a>
+  </nav>
+
+  <div class="sidebar-status">
+    <div class="status-dot" id="connectionDot"></div>
+    <span id="connectionLabel">Conectando...</span>
+  </div>
+</aside>
+
+<!-- ══ CONTENIDO PRINCIPAL ═══════════════════════════════════ -->
+<main class="main">
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title">Análisis Predictivo de Incendios</h1>
+      <div class="breadcrumb">Sistema / Estadísticas</div>
+    </div>
+    <div class="topbar-right">
+      <!-- Botón de actualización manual -->
+      <button class="btn btn-secondary" onclick="refreshData()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        Actualizar
+      </button>
+      <div class="timestamp" id="currentTime">--:--:--</div>
+    </div>
+  </header>
+
+  <!-- ══ CONTENIDO DE ESTADÍSTICAS ══ -->
+  <section class="content">
+
+    <!-- Indicador de riesgo principal (ancho completo) -->
+    <div class="card" style="grid-column:1/-1;">
+      <div class="card-header">
+        <span class="card-title">Nivel de Riesgo Actual</span>
+        <!-- Indicador visual de nivel de riesgo vía clase dinámica -->
+        <span class="badge minimal" id="riskBadge">Mínimo</span>
+      </div>
+      <div class="risk-indicator-section">
+        <!-- Gauge semi-circular -->
+        <div class="risk-gauge">
+          <div class="gauge-center" id="riskGaugeCenter">
+            <div class="gauge-value" id="riskValue">0%</div>
+            <div class="gauge-label" id="riskLabel">Minimal</div>
+          </div>
+          <svg viewBox="0 0 200 100" class="gauge-arc">
+            <path class="gauge-bg" d="M 10,100 A 90,90 0 0,1 190,100"></path>
+            <path class="gauge-fill minimal" id="gaugeFill"
+                  d="M 10,100 A 90,90 0 0,1 190,100"
+                  style="stroke-dasharray: 0, 283;"></path>
+          </svg>
+        </div>
+
+        <!-- Detalles: valores de sensores + barras de componentes -->
+        <div class="risk-details">
+          <div class="current-values-grid">
+            <div class="value-card">
+              <div class="value-label">Temperatura</div>
+              <div class="value-display" id="tempDisplay">--°C</div>
+              <div class="value-status" id="tempStatus"></div>
+            </div>
+            <div class="value-card">
+              <div class="value-label">Humedad</div>
+              <div class="value-display" id="humidityDisplay">--%</div>
+              <div class="value-status" id="humidityStatus"></div>
+            </div>
+            <div class="value-card">
+              <div class="value-label">MQ2 — Gas</div>
+              <div class="value-display" id="mq2Display">--</div>
+              <div class="value-status" id="mq2Status"></div>
+            </div>
+          </div>
+
+          <!-- Desglose de contribución por componente -->
+          <div class="risk-components-breakdown">
+            <div class="component-item">
+              <span class="component-label">Temperatura</span>
+              <div class="component-bar">
+                <div class="component-fill" id="compTemp" style="width:0%"></div>
+              </div>
+              <span class="component-value" id="compTempVal">0%</span>
+            </div>
+            <div class="component-item">
+              <span class="component-label">Humedad</span>
+              <div class="component-bar">
+                <div class="component-fill" id="compHumidity" style="width:0%"></div>
+              </div>
+              <span class="component-value" id="compHumidityVal">0%</span>
+            </div>
+            <div class="component-item">
+              <span class="component-label">Nivel MQ2</span>
+              <div class="component-bar">
+                <div class="component-fill" id="compMq2" style="width:0%"></div>
+              </div>
+              <span class="component-value" id="compMq2Val">0%</span>
+            </div>
+            <div class="component-item">
+              <span class="component-label">Tendencias</span>
+              <div class="component-bar">
+                <div class="component-fill" id="compTrend" style="width:0%"></div>
+              </div>
+              <span class="component-value" id="compTrendVal">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Razones del riesgo detectado -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Razones del Riesgo</span>
+      </div>
+      <div style="padding:16px;">
+        <ul class="reasons-list" id="reasonsList">
+          <li>Cargando análisis...</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Recomendaciones de seguridad -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Recomendaciones</span>
+      </div>
+      <div style="padding:16px;">
+        <ul class="recommendations-list" id="recommendationsList">
+          <li>Aguardando datos de sensores...</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Gráfico: Temperatura últimas 24h -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Temperatura — Últimas 24h</span>
+      </div>
+      <div style="padding:16px;height:300px;">
+        <canvas id="tempChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Gráfico: Humedad últimas 24h -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Humedad — Últimas 24h</span>
+      </div>
+      <div style="padding:16px;height:300px;">
+        <canvas id="humidityChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Gráfico: Nivel MQ2 últimas 24h -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Nivel MQ2 — Últimas 24h</span>
+      </div>
+      <div style="padding:16px;height:300px;">
+        <canvas id="mq2Chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Gráfico: Riesgo últimas 24h -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Riesgo de Incendio — Últimas 24h</span>
+      </div>
+      <div style="padding:16px;height:300px;">
+        <canvas id="riskChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Tabla de estadísticas históricas (ancho completo) -->
+    <div class="card" style="grid-column:1/-1;">
+      <div class="card-header">
+        <span class="card-title">Estadísticas Históricas</span>
+        <!-- Controles de período -->
+        <div class="stats-controls">
+          <button class="btn-stat active" id="statsDays7"  onclick="loadStatistics(7)">7d</button>
+          <button class="btn-stat"        id="statsDays30" onclick="loadStatistics(30)">30d</button>
+          <button class="btn-stat"        id="statsDays90" onclick="loadStatistics(90)">90d</button>
+        </div>
+      </div>
+      <div style="padding:16px;">
+        <div class="table-wrapper">
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Lecturas</th>
+                <th>Temp. Prom.</th>
+                <th>Max / Min</th>
+                <th>Humedad</th>
+                <th>MQ2</th>
+                <th>Riesgo</th>
+                <th>Alertas</th>
+              </tr>
+            </thead>
+            <tbody id="statsTableBody">
+              <tr>
+                <td colspan="8" class="loading-cell">Cargando estadísticas...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- Scripts: estadísticas → utilidades globales -->
+<script src="/static/js/statistics.js"></script>
+<script src="/static/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FireWatch — Configuración</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Estilos: base → pages compartido -->
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/pages.css">
+</head>
+<body>
+
+<!-- ══ SIDEBAR ═══════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">🔥</div>
+    <div class="logo-text">
+      <span class="logo-name">FIREWATCH</span>
+      <span class="logo-sub">Sistema Anti-Incendios</span>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <a class="nav-link" href="/">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <circle cx="12" cy="12" r="2"/>
+        <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+      </svg>
+      Monitoreo
+    </a>
+    <a class="nav-link" href="/historial">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      Historial
+    </a>
+    <a class="nav-link" href="/estadisticas">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6"  y1="20" x2="6"  y2="14"/>
+      </svg>
+      Estadísticas
+    </a>
+    <a class="nav-link active" href="/configuracion">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M5.07 4.93A10 10 0 0 1 19.13 19.07"/>
+      </svg>
+      Configuración
+    </a>
+  </nav>
+
+  <div class="sidebar-status">
+    <div class="status-dot connected"></div>
+    <span>Sistema activo</span>
+  </div>
+</aside>
+
+<!-- ══ CONTENIDO PRINCIPAL ═══════════════════════════════════ -->
+<main class="main">
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title">Configuración del Sistema</h1>
+      <div class="breadcrumb">Sistema / Configuración</div>
+    </div>
+    <div class="topbar-right">
+      <!-- Guardar todas las secciones a la vez -->
+      <button class="btn btn-primary" onclick="saveAll()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        Guardar Todo
+      </button>
+    </div>
+  </header>
+
+  <!-- ══ GRID DE CONFIGURACIÓN ══ -->
+  <div class="settings-grid">
+
+    <!-- Conexión ESP32 -->
+    <section class="card settings-card">
+      <div class="card-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <!-- Ícono SVG de rayo (sin emoji) -->
+          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+          <span class="card-title">Conexión ESP32</span>
+        </div>
+      </div>
+      <div class="settings-body">
+
+        <div class="field-group">
+          <label class="field-label" for="esp32_ip">Dirección IP</label>
+          <input type="text" class="field-input" id="esp32_ip" placeholder="192.168.1.100">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="esp32_port">Puerto</label>
+          <input type="number" class="field-input" id="esp32_port" placeholder="80">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="esp32_mode">Modo de conexión</label>
+          <select class="field-input" id="esp32_mode">
+            <option value="http">HTTP</option>
+            <option value="mqtt">MQTT</option>
+            <option value="serial">Serial</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="esp32_serial">
+            Puerto Serial
+            <span style="color:var(--text-dim);font-size:9px;margin-left:4px;">(solo modo Serial)</span>
+          </label>
+          <input type="text" class="field-input" id="esp32_serial" placeholder="COM3 o /dev/ttyUSB0">
+        </div>
+
+        <div style="display:flex;gap:7px;margin-top:4px;">
+          <button class="btn btn-secondary" style="flex:1" onclick="testESP32()">Probar conexión</button>
+          <button class="btn btn-primary" style="flex:1" onclick="saveESP32()">Guardar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Configuración de correo -->
+    <section class="card settings-card">
+      <div class="card-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <!-- Ícono SVG de sobre -->
+          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          <span class="card-title">Configuración de Correo</span>
+        </div>
+      </div>
+      <div class="settings-body">
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;">
+          La configuración de correo se gestiona únicamente en el backend mediante variables de entorno. No es editable desde la interfaz.
+        </p>
+        <div style="background:var(--bg-raised);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-top:4px;">
+          <p style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:1px;line-height:2;">
+            SMTP_SERVER &nbsp;·&nbsp; SMTP_PORT<br>
+            EMAIL_SENDER &nbsp;·&nbsp; EMAIL_RECIPIENT<br>
+            EMAIL_PASSWORD
+          </p>
+        </div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-secondary full-width" onclick="testEmail()">Enviar correo de prueba</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Destinatarios de alertas (ancho completo) -->
+    <section class="card settings-card" style="grid-column:1/-1;">
+      <div class="card-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <!-- Ícono SVG de bandeja -->
+          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2">
+            <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+            <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+          </svg>
+          <span class="card-title">Destinatarios de Alertas</span>
+        </div>
+      </div>
+      <div class="settings-body">
+        <p style="font-size:12px;color:var(--text-dim);font-family:var(--font-mono);letter-spacing:0.5px;">
+          Correos que reciben notificaciones cuando se detecta fuego.
+        </p>
+
+        <!-- Formulario para agregar destinatario -->
+        <div style="background:var(--bg-raised);border:1px solid var(--border);padding:12px;border-radius:var(--radius);">
+          <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;">
+            <div>
+              <label class="field-label" for="new_recipient_email">Correo</label>
+              <input type="email" class="field-input" id="new_recipient_email" placeholder="ejemplo@correo.com">
+            </div>
+            <div>
+              <label class="field-label" for="new_recipient_name">Nombre (opcional)</label>
+              <input type="text" class="field-input" id="new_recipient_name" placeholder="Juan García">
+            </div>
+            <button class="btn btn-primary" onclick="addRecipient()" style="height:37px;padding:0 16px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Agregar
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabla de destinatarios -->
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:11px;">
+            <thead>
+              <tr style="background:var(--bg-raised);border-bottom:1px solid var(--border);">
+                <th style="padding:9px 12px;text-align:left;color:var(--text-dim);letter-spacing:1.5px;text-transform:uppercase;font-size:9.5px;">Correo</th>
+                <th style="padding:9px 12px;text-align:left;color:var(--text-dim);letter-spacing:1.5px;text-transform:uppercase;font-size:9.5px;">Nombre</th>
+                <th style="padding:9px 12px;text-align:center;color:var(--text-dim);letter-spacing:1.5px;text-transform:uppercase;font-size:9.5px;width:80px;">Estado</th>
+                <th style="padding:9px 12px;text-align:center;color:var(--text-dim);letter-spacing:1.5px;text-transform:uppercase;font-size:9.5px;width:120px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="recipientsList">
+              <tr>
+                <td colspan="4" style="padding:24px;text-align:center;color:var(--text-dim);">Cargando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Base de datos MySQL -->
+    <section class="card settings-card">
+      <div class="card-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <!-- Ícono SVG de base de datos -->
+          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2">
+            <ellipse cx="12" cy="5" rx="9" ry="3"/>
+            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+          </svg>
+          <span class="card-title">Base de Datos MySQL</span>
+        </div>
+      </div>
+      <div class="settings-body">
+
+        <div class="field-group">
+          <label class="field-label" for="db_host">Host</label>
+          <input type="text" class="field-input" id="db_host" placeholder="localhost">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="db_port">Puerto</label>
+          <input type="number" class="field-input" id="db_port" placeholder="3306">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="db_user">Usuario</label>
+          <input type="text" class="field-input" id="db_user" placeholder="root">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="db_password">Contraseña</label>
+          <input type="password" class="field-input" id="db_password" placeholder="••••••••">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="db_name">Nombre de base de datos</label>
+          <input type="text" class="field-input" id="db_name" placeholder="firewatch">
+        </div>
+
+        <div style="display:flex;gap:7px;margin-top:4px;">
+          <button class="btn btn-secondary" style="flex:1" onclick="testDB()">Probar BD</button>
+          <button class="btn btn-primary" style="flex:1" onclick="saveDB()">Guardar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Parámetros de detección -->
+    <section class="card settings-card">
+      <div class="card-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <!-- Ícono SVG de objetivo/mira -->
+          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="6"/>
+            <circle cx="12" cy="12" r="2"/>
+          </svg>
+          <span class="card-title">Parámetros de Detección</span>
+        </div>
+      </div>
+      <div class="settings-body">
+
+        <!-- Slider de umbral de confianza -->
+        <div class="field-group">
+          <label class="field-label" for="detection_threshold">
+            Umbral de confianza —
+            <span id="thresholdDisplay" style="color:var(--fire);font-weight:700;">0.50</span>
+          </label>
+          <input
+            type="range"
+            class="field-range"
+            id="detection_threshold"
+            min="0.1" max="0.99" step="0.01" value="0.5"
+            oninput="document.getElementById('thresholdDisplay').textContent = parseFloat(this.value).toFixed(2)"
+          >
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="alert_cooldown">Cooldown de alertas (segundos)</label>
+          <input type="number" class="field-input" id="alert_cooldown" placeholder="30" min="5" max="300">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="camera_source">Índice de cámara</label>
+          <input type="number" class="field-input" id="camera_source" placeholder="0" min="0">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="model_path">Ruta del modelo</label>
+          <input type="text" class="field-input" id="model_path" placeholder="models/best.pt">
+        </div>
+
+        <button class="btn btn-primary full-width" onclick="saveDetectionSettings()">
+          Guardar parámetros
+        </button>
+      </div>
+    </section>
+
+    <!-- Filtro de pantallas -->
+    <section class="card settings-card">
+      <div class="card-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <!-- Ícono SVG de monitor/pantalla -->
+          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+          <span class="card-title">Filtro de Pantallas</span>
+        </div>
+      </div>
+      <div class="settings-body">
+        <p style="font-size:12px;color:var(--text-dim);font-family:var(--font-mono);letter-spacing:0.5px;line-height:1.6;">
+          Detecta pantallas de dispositivos para evitar falsas alarmas por fuego mostrado digitalmente.
+        </p>
+
+        <div class="field-group">
+          <label class="field-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="screen_filter_enabled" style="cursor:pointer;accent-color:var(--fire);">
+            <span>Activar filtro de pantallas</span>
+          </label>
+        </div>
+
+        <!-- Slider de penalización de confianza -->
+        <div class="field-group">
+          <label class="field-label" for="screen_filter_penalty">
+            Penalización de confianza —
+            <span id="penaltyDisplay" style="color:var(--fire);font-weight:700;">0.70</span>
+          </label>
+          <input
+            type="range"
+            class="field-range"
+            id="screen_filter_penalty"
+            min="0.0" max="1.0" step="0.05" value="0.7"
+            oninput="document.getElementById('penaltyDisplay').textContent = parseFloat(this.value).toFixed(2)"
+          >
+          <small style="color:var(--text-dim);display:block;margin-top:6px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.5px;">
+            0.0 = Rechaza · 0.5 = Reduce 50% · 1.0 = Sin penalización
+          </small>
+        </div>
+
+        <div style="display:flex;gap:7px;margin-top:8px;">
+          <button class="btn btn-secondary" style="flex:1" onclick="testScreenFilter()">Probar</button>
+          <button class="btn btn-primary" style="flex:1" onclick="saveScreenFilter()">Guardar</button>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /.settings-grid -->
+</main>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Scripts: utilidades → lógica de configuración -->
+<script src="/static/js/main.js"></script>
+<script src="/static/js/settings.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+# FireWatch config package
