@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FireWatch — Historial</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <!-- Estilos: base → pages compartido -->
   <link rel="stylesheet" href="/static/css/main.css">
   <link rel="stylesheet" href="/static/css/pages.css">
@@ -15,7 +16,12 @@
 <!-- ══ SIDEBAR ═══════════════════════════════════════════════ -->
 <aside class="sidebar">
   <div class="logo">
-    <div class="logo-icon">🔥</div>
+    <div class="logo-icon" aria-hidden="true">
+      <svg width="16" height="20" viewBox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 1C8 1 5 6 5 10C5 10 3 8 3.5 5.5C3.5 5.5 1 9.5 1 14C1 18.4 4.1 21.5 8 21.5C11.9 21.5 15 18.4 15 14C15 8.5 8 1 8 1Z" fill="white" fill-opacity="0.95"/>
+        <ellipse cx="8" cy="15.5" rx="2.5" ry="3" fill="rgba(255,59,30,0.45)"/>
+      </svg>
+    </div>
     <div class="logo-text">
       <span class="logo-name">FIREWATCH</span>
       <span class="logo-sub">Sistema Anti-Incendios</span>
