@@ -588,6 +588,29 @@ body {
   margin-top: 2px;
 }
 
+/* KPI icon badge ─────────────────────────────────────────── */
+.stat-icon {
+  width: 32px; height: 32px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.si-fire    { background: rgba(255,  59,  30, 0.12); border: 1px solid rgba(255,  59,  30, 0.24); }
+.si-alert   { background: rgba(245, 158,  11, 0.10); border: 1px solid rgba(245, 158,  11, 0.22); }
+.si-conf    { background: rgba( 34, 197,  94, 0.10); border: 1px solid rgba( 34, 197,  94, 0.20); }
+.si-time    { background: rgba( 91, 147, 255, 0.10); border: 1px solid rgba( 91, 147, 255, 0.20); }
+.si-neutral { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border); }
+
+.si-fire    svg { stroke: var(--fire); }
+.si-alert   svg { stroke: var(--amber); }
+.si-conf    svg { stroke: var(--safe); }
+.si-time    svg { stroke: #5B93FF; }
+.si-neutral svg { stroke: var(--text-secondary); }
+
 /* ══════════════════════════════════════════════════════════════
    TOAST NOTIFICATIONS
 ══════════════════════════════════════════════════════════════ */

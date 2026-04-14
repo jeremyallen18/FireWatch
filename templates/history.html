@@ -7,7 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <!-- Estilos: base → pages compartido -->
   <link rel="stylesheet" href="/static/css/main.css">
   <link rel="stylesheet" href="/static/css/pages.css">
 </head>
@@ -28,22 +27,22 @@
     </div>
   </div>
 
-  <nav class="nav">
+  <nav class="nav" aria-label="Navegación principal">
     <a class="nav-link" href="/">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
         <circle cx="12" cy="12" r="2"/>
         <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
       </svg>
       Monitoreo
     </a>
-    <a class="nav-link active" href="/historial">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <a class="nav-link active" href="/historial" aria-current="page">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
       </svg>
       Historial
     </a>
     <a class="nav-link" href="/estadisticas">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
         <line x1="18" y1="20" x2="18" y2="10"/>
         <line x1="12" y1="20" x2="12" y2="4"/>
         <line x1="6"  y1="20" x2="6"  y2="14"/>
@@ -51,7 +50,7 @@
       Estadísticas
     </a>
     <a class="nav-link" href="/configuracion">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
         <circle cx="12" cy="12" r="3"/>
         <path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M5.07 4.93A10 10 0 0 1 19.13 19.07"/>
       </svg>
@@ -60,7 +59,7 @@
   </nav>
 
   <div class="sidebar-status">
-    <div class="status-dot connected"></div>
+    <div class="status-dot connected" aria-hidden="true"></div>
     <span>Sistema activo</span>
   </div>
 </aside>
@@ -71,21 +70,19 @@
   <header class="topbar">
     <div class="topbar-left">
       <h1 class="page-title">Historial de Detecciones</h1>
-      <div class="breadcrumb">Sistema / Historial</div>
+      <div class="breadcrumb" aria-label="Ruta de navegación">Sistema / Historial</div>
     </div>
     <div class="topbar-right">
-      <!-- Exportar reporte a PDF -->
-      <button class="btn btn-secondary" onclick="exportPDF()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="btn btn-secondary" onclick="exportPDF()" aria-label="Descargar reporte en PDF">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
           <polyline points="7 10 12 15 17 10"/>
           <line x1="12" y1="15" x2="12" y2="3"/>
         </svg>
         Descargar PDF
       </button>
-      <!-- Enviar reporte por correo -->
-      <button class="btn btn-primary" onclick="openSendReportModal()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="btn btn-primary" onclick="openSendReportModal()" aria-label="Enviar reporte por correo electrónico">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
           <polyline points="22,6 12,13 2,6"/>
         </svg>
@@ -94,23 +91,23 @@
     </div>
   </header>
 
-  <!-- Panel de filtros -->
-  <section class="card filters-card">
+  <!-- Filtros -->
+  <section class="card filters-card" aria-label="Filtros de búsqueda">
     <div class="filters-grid">
       <div class="filter-group">
-        <label class="field-label">Desde</label>
+        <label class="field-label" for="dateFrom">Desde</label>
         <input type="date" class="filter-input" id="dateFrom">
       </div>
       <div class="filter-group">
-        <label class="field-label">Hasta</label>
+        <label class="field-label" for="dateTo">Hasta</label>
         <input type="date" class="filter-input" id="dateTo">
       </div>
       <div class="filter-group">
-        <label class="field-label">Confianza mínima</label>
+        <label class="field-label" for="minConf">Confianza mínima</label>
         <input type="number" class="filter-input" id="minConf" min="0" max="1" step="0.05" placeholder="0.0 — 1.0">
       </div>
       <div class="filter-group">
-        <label class="field-label">Tipo de detección</label>
+        <label class="field-label" for="filterStatus">Tipo de detección</label>
         <select class="filter-input" id="filterStatus">
           <option value="">Todos</option>
           <option value="Fuego detectado">Fuego detectado</option>
@@ -124,65 +121,85 @@
     </div>
   </section>
 
-  <!-- Resumen estadístico del historial -->
-  <div class="stats-row">
+  <!-- KPI resumen -->
+  <div class="stats-row" role="region" aria-label="Resumen del historial">
     <div class="stat-card">
+      <div class="stat-icon si-neutral" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      </div>
       <span class="stat-number" id="hStatTotal">0</span>
       <span class="stat-label">Total registros</span>
     </div>
     <div class="stat-card">
+      <div class="stat-icon si-time" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
       <span class="stat-number" id="hStatToday">0</span>
       <span class="stat-label">Hoy</span>
     </div>
     <div class="stat-card">
+      <div class="stat-icon si-conf" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
       <span class="stat-number" id="hStatAvg">0%</span>
       <span class="stat-label">Confianza promedio</span>
     </div>
     <div class="stat-card">
+      <div class="stat-icon si-alert" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
       <span class="stat-number" id="hStatAlerts">0</span>
       <span class="stat-label">Alertas enviadas</span>
     </div>
   </div>
 
-  <!-- Galería de registros de detección -->
-  <section class="card table-card">
+  <!-- Galería de registros -->
+  <section class="card table-card" aria-label="Registros de detección">
     <div class="card-header">
-      <span class="card-title">Registros de Detección</span>
-      <span class="record-count" id="recordCount">Cargando...</span>
+      <h2 class="card-title">Registros de Detección</h2>
+      <span class="record-count" id="recordCount" aria-live="polite">Cargando...</span>
     </div>
-
-    <!-- Galería generada por history.js -->
-    <div class="gallery-grid" id="galleryGrid">
-      <div style="text-align:center;padding:40px;grid-column:1/-1;color:var(--text-dim);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;">
+    <div class="gallery-grid" id="galleryGrid" role="list">
+      <div style="text-align:center;padding:48px;grid-column:1/-1;color:var(--text-dim);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;">
         Cargando registros...
       </div>
     </div>
-
-    <!-- Paginación generada por history.js -->
-    <div class="pagination" id="pagination"></div>
+    <div class="pagination" id="pagination" role="navigation" aria-label="Paginación"></div>
   </section>
 
   <!-- Modal de evidencia fotográfica -->
-  <div class="modal hidden" id="imageModal">
+  <div class="modal hidden" id="imageModal" role="dialog" aria-modal="true" aria-labelledby="imageModalTitle">
     <div class="modal-backdrop" onclick="closeModal()"></div>
     <div class="modal-content">
-      <button class="modal-close" onclick="closeModal()">✕</button>
-      <h3 class="modal-title">Evidencia de Detección</h3>
-      <img id="modalImage" src="" alt="Evidencia de detección" class="modal-image">
+      <button class="modal-close" onclick="closeModal()" aria-label="Cerrar modal">✕</button>
+      <h3 class="modal-title" id="imageModalTitle">Evidencia de Detección</h3>
+      <img id="modalImage" src="" alt="Captura de la detección de fuego" class="modal-image">
       <div class="modal-meta" id="modalMeta"></div>
     </div>
   </div>
 
-  <!-- Modal para enviar reporte por correo -->
-  <div class="modal hidden" id="sendReportModal">
+  <!-- Modal para enviar reporte -->
+  <div class="modal hidden" id="sendReportModal" role="dialog" aria-modal="true" aria-labelledby="sendReportTitle">
     <div class="modal-backdrop" onclick="closeSendReportModal()"></div>
     <div class="modal-content" style="max-width:440px;">
-      <button class="modal-close" onclick="closeSendReportModal()">✕</button>
-      <h3 class="modal-title">Enviar Reporte por Correo</h3>
+      <button class="modal-close" onclick="closeSendReportModal()" aria-label="Cerrar modal">✕</button>
+      <h3 class="modal-title" id="sendReportTitle">Enviar Reporte por Correo</h3>
       <div style="padding:4px 0 0;">
         <div class="field-group">
-          <label class="field-label">Correo destinatario</label>
-          <input type="email" class="field-input" id="reportEmailInput" placeholder="ejemplo@correo.com">
+          <label class="field-label" for="reportEmailInput">Correo destinatario</label>
+          <input type="email" class="field-input" id="reportEmailInput" placeholder="ejemplo@correo.com" autocomplete="email">
         </div>
         <div style="margin-top:20px;display:flex;gap:8px;justify-content:flex-end;">
           <button class="btn btn-outline" onclick="closeSendReportModal()">Cancelar</button>
@@ -194,9 +211,8 @@
 
 </main>
 
-<div class="toast-container" id="toastContainer"></div>
+<div class="toast-container" id="toastContainer" role="region" aria-live="polite"></div>
 
-<!-- Scripts: utilidades → lógica de historial -->
 <script src="/static/js/main.js"></script>
 <script src="/static/js/history.js"></script>
 </body>

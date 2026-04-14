@@ -7,12 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <!-- Estilos: base → pages compartido -->
   <link rel="stylesheet" href="/static/css/main.css">
   <link rel="stylesheet" href="/static/css/pages.css">
-  <!-- Charts -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-  <!-- WebSockets -->
   <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
 </head>
 <body>
@@ -32,22 +29,22 @@
     </div>
   </div>
 
-  <nav class="nav">
+  <nav class="nav" aria-label="Navegación principal">
     <a class="nav-link" href="/">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
         <circle cx="12" cy="12" r="2"/>
         <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
       </svg>
       Monitoreo
     </a>
     <a class="nav-link" href="/historial">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
       </svg>
       Historial
     </a>
-    <a class="nav-link active" href="/estadisticas">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <a class="nav-link active" href="/estadisticas" aria-current="page">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
         <line x1="18" y1="20" x2="18" y2="10"/>
         <line x1="12" y1="20" x2="12" y2="4"/>
         <line x1="6"  y1="20" x2="6"  y2="14"/>
@@ -55,7 +52,7 @@
       Estadísticas
     </a>
     <a class="nav-link" href="/configuracion">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
         <circle cx="12" cy="12" r="3"/>
         <path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M5.07 4.93A10 10 0 0 1 19.13 19.07"/>
       </svg>
@@ -63,8 +60,8 @@
     </a>
   </nav>
 
-  <div class="sidebar-status">
-    <div class="status-dot" id="connectionDot"></div>
+  <div class="sidebar-status" role="status" aria-live="polite">
+    <div class="status-dot" id="connectionDot" aria-hidden="true"></div>
     <span id="connectionLabel">Conectando...</span>
   </div>
 </aside>
@@ -75,39 +72,37 @@
   <header class="topbar">
     <div class="topbar-left">
       <h1 class="page-title">Análisis Predictivo de Incendios</h1>
-      <div class="breadcrumb">Sistema / Estadísticas</div>
+      <div class="breadcrumb" aria-label="Ruta de navegación">Sistema / Estadísticas</div>
     </div>
     <div class="topbar-right">
-      <!-- Botón de actualización manual -->
-      <button class="btn btn-secondary" onclick="refreshData()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="btn btn-secondary" onclick="refreshData()" aria-label="Actualizar datos de estadísticas">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <polyline points="23 4 23 10 17 10"/>
           <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
         </svg>
         Actualizar
       </button>
-      <div class="timestamp" id="currentTime">--:--:--</div>
+      <time class="timestamp" id="currentTime" aria-label="Hora actual">--:--:--</time>
     </div>
   </header>
 
   <!-- ══ CONTENIDO DE ESTADÍSTICAS ══ -->
-  <section class="content">
+  <section class="content" aria-label="Panel de estadísticas">
 
     <!-- Indicador de riesgo principal (ancho completo) -->
-    <div class="card" style="grid-column:1/-1;">
+    <div class="card" style="grid-column:1/-1;" aria-label="Nivel de riesgo actual">
       <div class="card-header">
-        <span class="card-title">Nivel de Riesgo Actual</span>
-        <!-- Indicador visual de nivel de riesgo vía clase dinámica -->
-        <span class="badge minimal" id="riskBadge">Mínimo</span>
+        <h2 class="card-title">Nivel de Riesgo Actual</h2>
+        <span class="badge minimal" id="riskBadge" role="status" aria-live="polite">Mínimo</span>
       </div>
       <div class="risk-indicator-section">
         <!-- Gauge semi-circular -->
-        <div class="risk-gauge">
+        <div class="risk-gauge" role="meter" aria-label="Medidor de riesgo" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
           <div class="gauge-center" id="riskGaugeCenter">
             <div class="gauge-value" id="riskValue">0%</div>
             <div class="gauge-label" id="riskLabel">Minimal</div>
           </div>
-          <svg viewBox="0 0 200 100" class="gauge-arc">
+          <svg viewBox="0 0 200 100" class="gauge-arc" aria-hidden="true">
             <path class="gauge-bg" d="M 10,100 A 90,90 0 0,1 190,100"></path>
             <path class="gauge-fill minimal" id="gaugeFill"
                   d="M 10,100 A 90,90 0 0,1 190,100"
@@ -117,50 +112,50 @@
 
         <!-- Detalles: valores de sensores + barras de componentes -->
         <div class="risk-details">
-          <div class="current-values-grid">
+          <div class="current-values-grid" role="region" aria-label="Valores actuales de sensores">
             <div class="value-card">
               <div class="value-label">Temperatura</div>
-              <div class="value-display" id="tempDisplay">--°C</div>
+              <div class="value-display" id="tempDisplay" aria-live="polite">--°C</div>
               <div class="value-status" id="tempStatus"></div>
             </div>
             <div class="value-card">
               <div class="value-label">Humedad</div>
-              <div class="value-display" id="humidityDisplay">--%</div>
+              <div class="value-display" id="humidityDisplay" aria-live="polite">--%</div>
               <div class="value-status" id="humidityStatus"></div>
             </div>
             <div class="value-card">
               <div class="value-label">MQ2 — Gas</div>
-              <div class="value-display" id="mq2Display">--</div>
+              <div class="value-display" id="mq2Display" aria-live="polite">--</div>
               <div class="value-status" id="mq2Status"></div>
             </div>
           </div>
 
           <!-- Desglose de contribución por componente -->
-          <div class="risk-components-breakdown">
+          <div class="risk-components-breakdown" role="region" aria-label="Desglose de factores de riesgo">
             <div class="component-item">
               <span class="component-label">Temperatura</span>
-              <div class="component-bar">
+              <div class="component-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Contribución de temperatura">
                 <div class="component-fill" id="compTemp" style="width:0%"></div>
               </div>
               <span class="component-value" id="compTempVal">0%</span>
             </div>
             <div class="component-item">
               <span class="component-label">Humedad</span>
-              <div class="component-bar">
+              <div class="component-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Contribución de humedad">
                 <div class="component-fill" id="compHumidity" style="width:0%"></div>
               </div>
               <span class="component-value" id="compHumidityVal">0%</span>
             </div>
             <div class="component-item">
               <span class="component-label">Nivel MQ2</span>
-              <div class="component-bar">
+              <div class="component-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Contribución del sensor MQ2">
                 <div class="component-fill" id="compMq2" style="width:0%"></div>
               </div>
               <span class="component-value" id="compMq2Val">0%</span>
             </div>
             <div class="component-item">
               <span class="component-label">Tendencias</span>
-              <div class="component-bar">
+              <div class="component-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Contribución de tendencias">
                 <div class="component-fill" id="compTrend" style="width:0%"></div>
               </div>
               <span class="component-value" id="compTrendVal">0%</span>
@@ -171,24 +166,24 @@
     </div>
 
     <!-- Razones del riesgo detectado -->
-    <div class="card">
+    <div class="card" aria-label="Razones del riesgo detectado">
       <div class="card-header">
-        <span class="card-title">Razones del Riesgo</span>
+        <h2 class="card-title">Razones del Riesgo</h2>
       </div>
       <div style="padding:16px;">
-        <ul class="reasons-list" id="reasonsList">
+        <ul class="reasons-list" id="reasonsList" aria-live="polite">
           <li>Cargando análisis...</li>
         </ul>
       </div>
     </div>
 
     <!-- Recomendaciones de seguridad -->
-    <div class="card">
+    <div class="card" aria-label="Recomendaciones de seguridad">
       <div class="card-header">
-        <span class="card-title">Recomendaciones</span>
+        <h2 class="card-title">Recomendaciones</h2>
       </div>
       <div style="padding:16px;">
-        <ul class="recommendations-list" id="recommendationsList">
+        <ul class="recommendations-list" id="recommendationsList" aria-live="polite">
           <li>Aguardando datos de sensores...</li>
         </ul>
       </div>
@@ -197,52 +192,51 @@
     <!-- Gráfico: Temperatura últimas 24h -->
     <div class="card">
       <div class="card-header">
-        <span class="card-title">Temperatura — Últimas 24h</span>
+        <h2 class="card-title">Temperatura — Últimas 24h</h2>
       </div>
       <div style="padding:16px;height:300px;">
-        <canvas id="tempChart"></canvas>
+        <canvas id="tempChart" aria-label="Gráfico de temperatura de las últimas 24 horas" role="img"></canvas>
       </div>
     </div>
 
     <!-- Gráfico: Humedad últimas 24h -->
     <div class="card">
       <div class="card-header">
-        <span class="card-title">Humedad — Últimas 24h</span>
+        <h2 class="card-title">Humedad — Últimas 24h</h2>
       </div>
       <div style="padding:16px;height:300px;">
-        <canvas id="humidityChart"></canvas>
+        <canvas id="humidityChart" aria-label="Gráfico de humedad de las últimas 24 horas" role="img"></canvas>
       </div>
     </div>
 
     <!-- Gráfico: Nivel MQ2 últimas 24h -->
     <div class="card">
       <div class="card-header">
-        <span class="card-title">Nivel MQ2 — Últimas 24h</span>
+        <h2 class="card-title">Nivel MQ2 — Últimas 24h</h2>
       </div>
       <div style="padding:16px;height:300px;">
-        <canvas id="mq2Chart"></canvas>
+        <canvas id="mq2Chart" aria-label="Gráfico del nivel de gas MQ2 de las últimas 24 horas" role="img"></canvas>
       </div>
     </div>
 
     <!-- Gráfico: Riesgo últimas 24h -->
     <div class="card">
       <div class="card-header">
-        <span class="card-title">Riesgo de Incendio — Últimas 24h</span>
+        <h2 class="card-title">Riesgo de Incendio — Últimas 24h</h2>
       </div>
       <div style="padding:16px;height:300px;">
-        <canvas id="riskChart"></canvas>
+        <canvas id="riskChart" aria-label="Gráfico del nivel de riesgo de incendio de las últimas 24 horas" role="img"></canvas>
       </div>
     </div>
 
     <!-- Tabla de estadísticas históricas (ancho completo) -->
-    <div class="card" style="grid-column:1/-1;">
+    <div class="card" style="grid-column:1/-1;" aria-label="Estadísticas históricas">
       <div class="card-header">
-        <span class="card-title">Estadísticas Históricas</span>
-        <!-- Controles de período -->
-        <div class="stats-controls">
-          <button class="btn-stat active" id="statsDays7"  onclick="loadStatistics(7)">7d</button>
-          <button class="btn-stat"        id="statsDays30" onclick="loadStatistics(30)">30d</button>
-          <button class="btn-stat"        id="statsDays90" onclick="loadStatistics(90)">90d</button>
+        <h2 class="card-title">Estadísticas Históricas</h2>
+        <div class="stats-controls" role="group" aria-label="Seleccionar período de tiempo">
+          <button class="btn-stat active" id="statsDays7"  onclick="loadStatistics(7)"  aria-pressed="true">7d</button>
+          <button class="btn-stat"        id="statsDays30" onclick="loadStatistics(30)" aria-pressed="false">30d</button>
+          <button class="btn-stat"        id="statsDays90" onclick="loadStatistics(90)" aria-pressed="false">90d</button>
         </div>
       </div>
       <div style="padding:16px;">
@@ -250,14 +244,14 @@
           <table class="stats-table">
             <thead>
               <tr>
-                <th>Fecha</th>
-                <th>Lecturas</th>
-                <th>Temp. Prom.</th>
-                <th>Max / Min</th>
-                <th>Humedad</th>
-                <th>MQ2</th>
-                <th>Riesgo</th>
-                <th>Alertas</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Lecturas</th>
+                <th scope="col">Temp. Prom.</th>
+                <th scope="col">Max / Min</th>
+                <th scope="col">Humedad</th>
+                <th scope="col">MQ2</th>
+                <th scope="col">Riesgo</th>
+                <th scope="col">Alertas</th>
               </tr>
             </thead>
             <tbody id="statsTableBody">
@@ -274,7 +268,8 @@
 
 </main>
 
-<!-- Scripts: estadísticas → utilidades globales -->
+<div class="toast-container" id="toastContainer" role="region" aria-live="polite"></div>
+
 <script src="/static/js/statistics.js"></script>
 <script src="/static/js/main.js"></script>
 </body>

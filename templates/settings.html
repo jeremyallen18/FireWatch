@@ -28,30 +28,30 @@
     </div>
   </div>
 
-  <nav class="nav">
+  <nav class="nav" aria-label="Navegación principal">
     <a class="nav-link" href="/">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
         <circle cx="12" cy="12" r="2"/>
         <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
       </svg>
       Monitoreo
     </a>
     <a class="nav-link" href="/historial">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
       </svg>
       Historial
     </a>
     <a class="nav-link" href="/estadisticas">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
         <line x1="18" y1="20" x2="18" y2="10"/>
         <line x1="12" y1="20" x2="12" y2="4"/>
         <line x1="6"  y1="20" x2="6"  y2="14"/>
       </svg>
       Estadísticas
     </a>
-    <a class="nav-link active" href="/configuracion">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <a class="nav-link active" href="/configuracion" aria-current="page">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
         <circle cx="12" cy="12" r="3"/>
         <path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M5.07 4.93A10 10 0 0 1 19.13 19.07"/>
       </svg>
@@ -59,8 +59,8 @@
     </a>
   </nav>
 
-  <div class="sidebar-status">
-    <div class="status-dot connected"></div>
+  <div class="sidebar-status" role="status" aria-live="polite">
+    <div class="status-dot connected" aria-hidden="true"></div>
     <span>Sistema activo</span>
   </div>
 </aside>
@@ -71,12 +71,12 @@
   <header class="topbar">
     <div class="topbar-left">
       <h1 class="page-title">Configuración del Sistema</h1>
-      <div class="breadcrumb">Sistema / Configuración</div>
+      <div class="breadcrumb" aria-label="Ruta de navegación">Sistema / Configuración</div>
     </div>
     <div class="topbar-right">
       <!-- Guardar todas las secciones a la vez -->
-      <button class="btn btn-primary" onclick="saveAll()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="btn btn-primary" onclick="saveAll()" aria-label="Guardar toda la configuración">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
           <polyline points="17 21 17 13 7 13 7 21"/>
           <polyline points="7 3 7 8 15 8"/>
@@ -90,14 +90,13 @@
   <div class="settings-grid">
 
     <!-- Conexión ESP32 -->
-    <section class="card settings-card">
+    <section class="card settings-card" aria-label="Configuración de conexión ESP32">
       <div class="card-header">
         <div style="display:flex;align-items:center;gap:8px;">
-          <!-- Ícono SVG de rayo (sin emoji) -->
-          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2">
+          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2" aria-hidden="true">
             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
           </svg>
-          <span class="card-title">Conexión ESP32</span>
+          <h2 class="card-title">Conexión ESP32</h2>
         </div>
       </div>
       <div class="settings-body">
@@ -130,22 +129,21 @@
         </div>
 
         <div style="display:flex;gap:7px;margin-top:4px;">
-          <button class="btn btn-secondary" style="flex:1" onclick="testESP32()">Probar conexión</button>
-          <button class="btn btn-primary" style="flex:1" onclick="saveESP32()">Guardar</button>
+          <button class="btn btn-secondary" style="flex:1" onclick="testESP32()" aria-label="Probar conexión con ESP32">Probar conexión</button>
+          <button class="btn btn-primary" style="flex:1" onclick="saveESP32()" aria-label="Guardar configuración ESP32">Guardar</button>
         </div>
       </div>
     </section>
 
     <!-- Configuración de correo -->
-    <section class="card settings-card">
+    <section class="card settings-card" aria-label="Configuración de correo electrónico">
       <div class="card-header">
         <div style="display:flex;align-items:center;gap:8px;">
-          <!-- Ícono SVG de sobre -->
-          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2">
+          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2" aria-hidden="true">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
             <polyline points="22,6 12,13 2,6"/>
           </svg>
-          <span class="card-title">Configuración de Correo</span>
+          <h2 class="card-title">Configuración de Correo</h2>
         </div>
       </div>
       <div class="settings-body">
@@ -160,21 +158,20 @@
           </p>
         </div>
         <div style="margin-top:8px;">
-          <button class="btn btn-secondary full-width" onclick="testEmail()">Enviar correo de prueba</button>
+          <button class="btn btn-secondary full-width" onclick="testEmail()" aria-label="Enviar correo electrónico de prueba">Enviar correo de prueba</button>
         </div>
       </div>
     </section>
 
     <!-- Destinatarios de alertas (ancho completo) -->
-    <section class="card settings-card" style="grid-column:1/-1;">
+    <section class="card settings-card" style="grid-column:1/-1;" aria-label="Destinatarios de alertas de incendio">
       <div class="card-header">
         <div style="display:flex;align-items:center;gap:8px;">
-          <!-- Ícono SVG de bandeja -->
-          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2">
+          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2" aria-hidden="true">
             <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
             <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
           </svg>
-          <span class="card-title">Destinatarios de Alertas</span>
+          <h2 class="card-title">Destinatarios de Alertas</h2>
         </div>
       </div>
       <div class="settings-body">
@@ -193,8 +190,8 @@
               <label class="field-label" for="new_recipient_name">Nombre (opcional)</label>
               <input type="text" class="field-input" id="new_recipient_name" placeholder="Juan García">
             </div>
-            <button class="btn btn-primary" onclick="addRecipient()" style="height:37px;padding:0 16px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <button class="btn btn-primary" onclick="addRecipient()" style="height:37px;padding:0 16px;" aria-label="Agregar destinatario de alertas">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                 <line x1="12" y1="5" x2="12" y2="19"/>
                 <line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
@@ -225,16 +222,15 @@
     </section>
 
     <!-- Base de datos MySQL -->
-    <section class="card settings-card">
+    <section class="card settings-card" aria-label="Configuración de base de datos MySQL">
       <div class="card-header">
         <div style="display:flex;align-items:center;gap:8px;">
-          <!-- Ícono SVG de base de datos -->
-          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2">
+          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2" aria-hidden="true">
             <ellipse cx="12" cy="5" rx="9" ry="3"/>
             <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
             <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
           </svg>
-          <span class="card-title">Base de Datos MySQL</span>
+          <h2 class="card-title">Base de Datos MySQL</h2>
         </div>
       </div>
       <div class="settings-body">
@@ -265,23 +261,22 @@
         </div>
 
         <div style="display:flex;gap:7px;margin-top:4px;">
-          <button class="btn btn-secondary" style="flex:1" onclick="testDB()">Probar BD</button>
-          <button class="btn btn-primary" style="flex:1" onclick="saveDB()">Guardar</button>
+          <button class="btn btn-secondary" style="flex:1" onclick="testDB()" aria-label="Probar conexión a base de datos">Probar BD</button>
+          <button class="btn btn-primary" style="flex:1" onclick="saveDB()" aria-label="Guardar configuración de base de datos">Guardar</button>
         </div>
       </div>
     </section>
 
     <!-- Parámetros de detección -->
-    <section class="card settings-card">
+    <section class="card settings-card" aria-label="Parámetros de detección de incendio">
       <div class="card-header">
         <div style="display:flex;align-items:center;gap:8px;">
-          <!-- Ícono SVG de objetivo/mira -->
-          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2">
+          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2" aria-hidden="true">
             <circle cx="12" cy="12" r="10"/>
             <circle cx="12" cy="12" r="6"/>
             <circle cx="12" cy="12" r="2"/>
           </svg>
-          <span class="card-title">Parámetros de Detección</span>
+          <h2 class="card-title">Parámetros de Detección</h2>
         </div>
       </div>
       <div class="settings-body">
@@ -316,23 +311,22 @@
           <input type="text" class="field-input" id="model_path" placeholder="models/best.pt">
         </div>
 
-        <button class="btn btn-primary full-width" onclick="saveDetectionSettings()">
+        <button class="btn btn-primary full-width" onclick="saveDetectionSettings()" aria-label="Guardar parámetros de detección">
           Guardar parámetros
         </button>
       </div>
     </section>
 
     <!-- Filtro de pantallas -->
-    <section class="card settings-card">
+    <section class="card settings-card" aria-label="Configuración del filtro de pantallas digitales">
       <div class="card-header">
         <div style="display:flex;align-items:center;gap:8px;">
-          <!-- Ícono SVG de monitor/pantalla -->
-          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2">
+          <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2" aria-hidden="true">
             <rect x="2" y="3" width="20" height="14" rx="2"/>
             <line x1="8" y1="21" x2="16" y2="21"/>
             <line x1="12" y1="17" x2="12" y2="21"/>
           </svg>
-          <span class="card-title">Filtro de Pantallas</span>
+          <h2 class="card-title">Filtro de Pantallas</h2>
         </div>
       </div>
       <div class="settings-body">
@@ -366,8 +360,8 @@
         </div>
 
         <div style="display:flex;gap:7px;margin-top:8px;">
-          <button class="btn btn-secondary" style="flex:1" onclick="testScreenFilter()">Probar</button>
-          <button class="btn btn-primary" style="flex:1" onclick="saveScreenFilter()">Guardar</button>
+          <button class="btn btn-secondary" style="flex:1" onclick="testScreenFilter()" aria-label="Probar filtro de pantallas">Probar</button>
+          <button class="btn btn-primary" style="flex:1" onclick="saveScreenFilter()" aria-label="Guardar configuración del filtro de pantallas">Guardar</button>
         </div>
       </div>
     </section>
@@ -375,7 +369,7 @@
   </div><!-- /.settings-grid -->
 </main>
 
-<div class="toast-container" id="toastContainer"></div>
+<div class="toast-container" id="toastContainer" role="region" aria-live="polite"></div>
 
 <!-- Scripts: utilidades → lógica de configuración -->
 <script src="/static/js/main.js"></script>
