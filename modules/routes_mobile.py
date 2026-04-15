@@ -57,8 +57,15 @@ def analyze_media():
       - type       : 'image' | 'video'
       - user_id    : string identificador del usuario (opcional)
     """
-    # Importar módulos globales del app principal
-    from app import detector, history, notifier, fire_predictor, socketio, esp32, system_state, state_lock
+    # Importar módulos desde el contenedor de dependencias
+    from services import container
+    from extensions import socketio
+    detector = container.detector
+    history = container.history
+    notifier = container.notifier
+    fire_predictor = container.fire_predictor
+    esp32 = container.esp32
+    system_state = container.system_state
 
     # ── Validar que llegó un archivo ──────────────────────────────────────────
     if 'file' not in request.files:
@@ -191,9 +198,7 @@ def analyze_media():
             esp32_ok = esp32.activate()
 
             # Actualizar estado global para que el dashboard lo refleje
-            with state_lock:
-                system_state['alert_active'] = True
-                system_state['fire_detected'] = True
+            system_state.update({'alert_active': True, 'fire_detected': True})
 
             if detection_id and detection_id != -1:
                 history.update_detection(detection_id, {
@@ -290,7 +295,8 @@ def list_photos():
         "pages": 13
       }
     """
-    from app import history
+    from services import container
+    history = container.history
 
     try:
         page = max(1, int(request.args.get('page', 1)))
@@ -359,10 +365,11 @@ def mobile_status():
     Endpoint de health-check para que Flutter verifique
     que el servidor está disponible antes de enviar archivos
     """
-    from app import system_state
+    from services import container
+    state = container.system_state
     return jsonify({
         'online': True,
-        'monitoring': system_state.get('monitoring', False),
-        'fire_detected': system_state.get('fire_detected', False),
+        'monitoring': state.get('monitoring', False),
+        'fire_detected': state.get('fire_detected', False),
         'timestamp': datetime.now().isoformat(),
     }), 200
