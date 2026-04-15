@@ -1,0 +1,1 @@
+# FireWatch core package
