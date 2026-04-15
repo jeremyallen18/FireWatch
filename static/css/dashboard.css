@@ -1,12 +1,12 @@
 /* ═══════════════════════════════════════════════════════════════
    FIREWATCH — dashboard.css
-   Estilos exclusivos de la página de monitoreo en tiempo real
+   UI/UX Pro Max Redesign — Página de Monitoreo en Tiempo Real
 ═══════════════════════════════════════════════════════════════ */
 
-/* ── Layout cuadrícula: video izq / status der ──────────────── */
+/* ── Grid principal: video izq / status der ─────────────────── */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 360px;
+  grid-template-columns: 1fr 368px;
   grid-template-rows: auto auto auto;
   gap: 16px;
   align-items: start;
@@ -15,7 +15,9 @@
 .stats-row { grid-column: 1 / -1; }
 .log-card  { grid-column: 1 / -1; }
 
-/* ── Video Card ─────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   VIDEO CARD
+══════════════════════════════════════════════════════════════ */
 .video-card { grid-column: 1; }
 
 .video-wrapper {
@@ -32,35 +34,37 @@
   display: block;
 }
 
-/* Overlay oscuro cuando el monitoreo está detenido */
+/* Overlay cuando el monitoreo está detenido */
 .video-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(6,7,9,0.88);
+  background: rgba(4, 6, 10, 0.90);
   display: grid;
   place-items: center;
-  backdrop-filter: blur(3px);
-  transition: opacity .3s ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: opacity var(--transition-md);
 }
 
 .video-overlay.hidden { display: none; }
 
 .overlay-status { text-align: center; }
 
-/* Ícono central del overlay: cuadrado de cámara */
+/* Ícono central */
 .overlay-icon {
-  width: 48px; height: 48px;
+  width: 56px; height: 56px;
   border: 1px solid var(--border-mid);
-  border-radius: 8px;
-  margin: 0 auto 16px;
+  border-radius: var(--radius-lg);
+  margin: 0 auto 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--bg-raised);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .overlay-icon svg {
-  width: 22px; height: 22px;
+  width: 24px; height: 24px;
   stroke: var(--text-dim);
   fill: none;
 }
@@ -80,40 +84,41 @@
   letter-spacing: 1px;
 }
 
-/* Borde parpadeante rojo cuando se detecta fuego */
+/* Borde parpadeante de fuego */
 .fire-flash {
   position: absolute;
   inset: 0;
   border: 3px solid var(--fire);
   pointer-events: none;
   opacity: 0;
-  box-shadow: inset 0 0 50px rgba(255,60,30,0.25);
   transition: opacity .15s ease;
 }
 
 .fire-flash.active {
   opacity: 1;
-  animation: fire-border 0.7s ease-in-out infinite alternate;
+  animation: fire-border .65s ease-in-out infinite alternate;
 }
 
 @keyframes fire-border {
-  from { box-shadow: inset 0 0 30px rgba(255,60,30,0.15), 0 0 20px rgba(255,60,30,0.12); }
-  to   { box-shadow: inset 0 0 70px rgba(255,60,30,0.45), 0 0 40px rgba(255,60,30,0.28); }
+  from { box-shadow: inset 0 0 32px rgba(255, 59, 30, 0.15), 0 0 22px rgba(255, 59, 30, 0.12); }
+  to   { box-shadow: inset 0 0 80px rgba(255, 59, 30, 0.48), 0 0 48px rgba(255, 59, 30, 0.30); }
 }
 
-/* HUD de confianza superpuesto al video (esquina inf. der.) */
+/* HUD de confianza — esquina inferior derecha */
 .confidence-hud {
   position: absolute;
-  bottom: 10px; right: 10px;
-  background: rgba(6,7,9,0.80);
+  bottom: 12px; right: 12px;
+  background: rgba(4, 6, 10, 0.82);
   border: 1px solid var(--border-hot);
-  border-radius: 4px;
-  padding: 5px 10px;
+  border-radius: var(--radius);
+  padding: 6px 12px 7px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 1px;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
 }
 
 .conf-label {
@@ -126,13 +131,14 @@
 
 .conf-value {
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: 26px;
   letter-spacing: 1px;
   color: var(--fire);
   line-height: 1;
+  text-shadow: 0 0 18px rgba(255, 59, 30, 0.55);
 }
 
-/* Badge LIVE: puntos y texto */
+/* Badge LIVE */
 .live-badge {
   display: flex;
   align-items: center;
@@ -142,89 +148,104 @@
   letter-spacing: 2px;
   color: var(--text-dim);
   text-transform: uppercase;
+  transition: color var(--transition);
 }
 
 .live-badge.active { color: var(--fire); }
 
 .pulse-dot {
-  width: 6px; height: 6px;
+  width: 7px; height: 7px;
   border-radius: 50%;
   background: var(--text-dim);
   display: inline-block;
+  flex-shrink: 0;
+  transition: background var(--transition), box-shadow var(--transition);
 }
 
 .live-badge.active .pulse-dot {
   background: var(--fire);
-  box-shadow: 0 0 5px var(--fire);
+  box-shadow: 0 0 6px var(--fire);
   animation: pulse-ring 1.2s ease-in-out infinite;
 }
 
 @keyframes pulse-ring {
-  0%   { box-shadow: 0 0 0 0 rgba(255,60,30,0.5); }
-  70%  { box-shadow: 0 0 0 5px rgba(255,60,30,0); }
-  100% { box-shadow: 0 0 0 0 rgba(255,60,30,0); }
+  0%   { box-shadow: 0 0 0 0 rgba(255, 59, 30, 0.55); }
+  70%  { box-shadow: 0 0 0 6px rgba(255, 59, 30, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 59, 30, 0); }
 }
 
-/* ── Status Card ────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   STATUS CARD
+══════════════════════════════════════════════════════════════ */
 .status-card { grid-column: 2; }
 
 .status-main {
   display: flex;
   justify-content: center;
-  padding: 24px 0 18px;
+  padding: 28px 0 20px;
 }
 
 /* Círculo de estado central */
 .status-circle {
-  width: 136px; height: 136px;
+  width: 144px; height: 144px;
   border-radius: 50%;
-  border: 1px solid var(--border-mid);
+  border: 1.5px solid var(--border-mid);
   display: grid;
   place-items: center;
   position: relative;
-  background: radial-gradient(circle, var(--bg-raised) 0%, var(--bg-surface) 100%);
+  background: radial-gradient(circle at 50% 45%,
+    var(--bg-raised) 0%,
+    var(--bg-surface) 100%);
   transition: border-color .3s ease, box-shadow .3s ease;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.025);
 }
 
-/* Anillo exterior sutil */
+/* Anillo exterior 1 */
 .status-circle::before {
   content: '';
   position: absolute;
-  inset: -7px;
+  inset: -9px;
   border-radius: 50%;
   border: 1px solid var(--border);
-  opacity: 0.4;
+  opacity: 0.35;
 }
 
-/* Anillo exterior extra */
+/* Anillo exterior 2 (punteado) */
 .status-circle::after {
   content: '';
   position: absolute;
-  inset: -14px;
+  inset: -18px;
   border-radius: 50%;
   border: 1px dashed var(--border);
-  opacity: 0.2;
+  opacity: 0.15;
 }
 
 .status-circle.fire {
   border-color: var(--fire);
-  box-shadow: 0 0 40px rgba(255,60,30,0.25), inset 0 0 30px rgba(255,60,30,0.1);
-  animation: circle-pulse 0.9s ease-in-out infinite alternate;
+  box-shadow:
+    0 0 48px rgba(255, 59, 30, 0.28),
+    inset 0 0 36px rgba(255, 59, 30, 0.10);
+  animation: circle-pulse .9s ease-in-out infinite alternate;
 }
 
 .status-circle.safe {
   border-color: var(--safe);
-  box-shadow: 0 0 20px rgba(30,200,122,0.15);
+  box-shadow: 0 0 24px rgba(34, 197, 94, 0.16);
 }
 
 @keyframes circle-pulse {
-  from { box-shadow: 0 0 24px rgba(255,60,30,0.18); }
-  to   { box-shadow: 0 0 56px rgba(255,60,30,0.42); }
+  from { box-shadow: 0 0 28px rgba(255, 59, 30, 0.20); }
+  to   { box-shadow: 0 0 62px rgba(255, 59, 30, 0.46), inset 0 0 48px rgba(255, 59, 30, 0.14); }
 }
 
 .status-circle-inner { text-align: center; }
 
-.status-icon-big { font-size: 34px; display: block; margin-bottom: 6px; }
+.status-icon-big {
+  font-size: 36px;
+  display: block;
+  margin-bottom: 8px;
+  line-height: 1;
+}
 
 .status-text-big {
   font-family: var(--font-display);
@@ -236,10 +257,10 @@
 
 /* ── Métricas del status card ───────────────────────────────── */
 .status-metrics {
-  padding: 0 16px 16px;
+  padding: 0 18px 18px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 13px;
 }
 
 .metric { display: flex; flex-direction: column; gap: 4px; }
@@ -253,45 +274,50 @@
 }
 
 .metric-value {
-  font-family: var(--font-ui);
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-/* Barra de confianza: llena con degradado fuego */
+/* Barra de confianza */
 .confidence-bar-container {
-  height: 3px;
+  height: 4px;
   background: var(--bg-overlay);
   border-radius: 2px;
   overflow: hidden;
+  margin-top: 2px;
 }
 
 .confidence-bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--fire-dark), var(--fire), var(--amber));
+  background: linear-gradient(90deg,
+    var(--fire-dark),
+    var(--fire) 60%,
+    var(--amber));
   border-radius: 2px;
-  transition: width .5s cubic-bezier(.4,0,.2,1);
-  box-shadow: 0 0 6px rgba(255,60,30,0.35);
+  transition: width .5s cubic-bezier(.4, 0, .2, 1);
+  box-shadow: 0 0 8px rgba(255, 59, 30, 0.38);
 }
 
-/* ── Controles de inicio/parada ─────────────────────────────── */
+/* ── Controles ──────────────────────────────────────────────── */
 .controls {
-  padding: 12px 16px 16px;
+  padding: 14px 16px 18px;
   border-top: 1px solid var(--border);
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 7px;
+  gap: 8px;
 }
 
-/* El botón de inicio ocupa columna completa */
 .controls .btn-primary { grid-column: 1 / -1; }
 
-/* ── Log de eventos ─────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   LOG DE EVENTOS
+══════════════════════════════════════════════════════════════ */
 .log-container {
-  height: 210px;
+  height: 220px;
   overflow-y: auto;
-  padding: 8px 0;
+  padding: 6px 0;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }
@@ -300,11 +326,11 @@
   display: flex;
   gap: 12px;
   align-items: baseline;
-  padding: 4px 16px;
+  padding: 5px 18px;
   font-family: var(--font-mono);
   font-size: 11.5px;
   border-left: 2px solid transparent;
-  transition: background .12s ease;
+  transition: background var(--transition);
 }
 
 .log-entry:hover { background: var(--bg-raised); }
@@ -312,30 +338,27 @@
 .log-time {
   color: var(--text-dim);
   flex-shrink: 0;
-  font-size: 10.5px;
+  font-size: 10px;
   user-select: none;
+  letter-spacing: 0.5px;
 }
 
-.log-msg { color: var(--text-secondary); }
+.log-msg { color: var(--text-secondary); line-height: 1.4; }
 
 /* Tipos de log */
 .log-entry.log-fire {
   border-left-color: var(--fire);
-  background: rgba(255,60,30,0.03);
+  background: rgba(255, 59, 30, 0.03);
 }
 .log-entry.log-fire .log-msg { color: var(--fire); }
 
-.log-entry.log-warn {
-  border-left-color: var(--amber);
-}
-.log-entry.log-warn .log-msg { color: var(--amber); }
+.log-entry.log-warn  { border-left-color: var(--amber); }
+.log-entry.log-warn  .log-msg { color: var(--amber); }
 
-.log-entry.log-ok {
-  border-left-color: var(--safe);
-}
-.log-entry.log-ok .log-msg { color: var(--safe); }
+.log-entry.log-ok    { border-left-color: var(--safe); }
+.log-entry.log-ok    .log-msg { color: var(--safe); }
 
-.log-entry.log-info { border-left-color: var(--border); }
+.log-entry.log-info  { border-left-color: var(--border); }
 
 /* Animación de entrada para nuevos logs */
 @keyframes log-slide {
@@ -343,12 +366,27 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.log-entry.new { animation: log-slide .18s ease forwards; }
+.log-entry.new { animation: log-slide .18s ease-out forwards; }
 
-/* Contador de registros en header del log */
 .record-count {
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--text-dim);
   letter-spacing: 1px;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .status-card { grid-column: 1; }
+  .video-card  { grid-column: 1; }
+}
+
+@media (max-width: 640px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+  .controls .btn-primary { grid-column: 1; }
 }
