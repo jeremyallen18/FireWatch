@@ -8,6 +8,7 @@ from datetime import datetime
 from extensions import socketio
 from services import container
 from services.alert_service import build_sensor_alert_email, send_sensor_alert_email
+from services import powerbi_service
 
 
 def process_sensor_alert(data: dict, validated: dict) -> dict:
@@ -44,6 +45,9 @@ def process_sensor_alert(data: dict, validated: dict) -> dict:
         'prediction': prediction,
         'timestamp': datetime.now().isoformat(),
     }, skip_sid=True)
+
+    # Enviar datos a Power BI en tiempo real
+    powerbi_service.push_sensor_data(temperature, humidity, mq2_value, prediction)
 
     # Construir y enviar correo de alerta
     subject, body_html = build_sensor_alert_email(
@@ -84,6 +88,9 @@ def save_sensor_data(data: dict, validated: dict) -> dict:
         'prediction': prediction,
         'timestamp': datetime.now().isoformat(),
     }, skip_sid=True)
+
+    # Enviar datos a Power BI en tiempo real
+    powerbi_service.push_sensor_data(temperature, humidity, mq2_value, prediction)
 
     return {
         'success': True,

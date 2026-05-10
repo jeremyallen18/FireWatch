@@ -32,6 +32,11 @@ function loadSettings() {
       setValue('camera_source',       cfg.camera_source ?? 0);
       setValue('model_path',          cfg.model_path || 'models/best.pt');
 
+      // Power BI
+      const pbiCheckbox = document.getElementById('powerbi_enabled');
+      if (pbiCheckbox) pbiCheckbox.checked = (cfg.powerbi_enabled === 'true');
+      setValue('powerbi_push_url', cfg.powerbi_push_url);
+
       // Sincroniza el label del slider
       const slider = document.getElementById('detection_threshold');
       if (slider) {
@@ -227,6 +232,7 @@ function saveAll() {
   saveESP32();
   saveDB();
   saveDetectionSettings();
+  savePowerBI();
 }
 
 /* ── POST genérico para guardar configuración ───────────────── */
@@ -502,6 +508,40 @@ function saveScreenFilter() {
       }
     })
     .catch(() => showToast('Error de red', 'error'));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   POWER BI — STREAMING EN TIEMPO REAL
+═══════════════════════════════════════════════════════════════ */
+
+/* Guarda configuración de Power BI */
+function savePowerBI() {
+  const enabled = document.getElementById('powerbi_enabled').checked;
+  const pushUrl = getValue('powerbi_push_url') || '';
+
+  if (enabled && !pushUrl.trim()) {
+    showToast('La Push URL es requerida para activar Power BI', 'error');
+    return;
+  }
+
+  if (pushUrl && pushUrl.length > 2048) {
+    showToast('La URL no puede exceder 2048 caracteres', 'error');
+    return;
+  }
+
+  postSettings('/api/config/powerbi', {
+    powerbi_enabled:  enabled,
+    powerbi_push_url: pushUrl
+  }, 'Configuración de Power BI guardada');
+}
+
+/* Prueba conexión con Power BI */
+function testPowerBI() {
+  showToast('Enviando dato de prueba a Power BI...', 'info');
+  fetch('/api/test-powerbi', { method: 'POST' })
+    .then(r => r.json())
+    .then(d => showToast(d.message || (d.success ? 'OK' : 'Error'), d.success ? 'success' : 'error'))
+    .catch(() => showToast('Error al probar Power BI', 'error'));
 }
 
 /* Prueba el filtro de pantallas */
